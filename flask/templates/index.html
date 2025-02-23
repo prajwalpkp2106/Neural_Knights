@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .upload-container {
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            width: 300px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .loader {
+            border: 5px solid #f3f3f3; /* Light grey */
+            border-top: 5px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none; /* Hidden by default */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Plant Disease Detection</h1>
+    <div class="upload-container">
+        <select id="plantType">
+            <option value="wheat">Wheat</option>
+            <option value="rice">Rice</option>
+            <option value="maize">Maize</option>
+            <option value="tomato">Tomato</option>
+            <option value="potato">Potato</option>  
+            <option value="pepper">Pepper</option>  <!-- Added Pepper option -->
+        </select>
+        <input type="file" id="fileInput" accept="image/*">
+        <button onclick="uploadImage()">Upload and Predict</button>
+    </div>
+    <div class="loader" id="loader"></div>
+    <div class="result">
+        <h2>Prediction: <span id="predictionResult"></span></h2>
+        <h2>Severity: <span id="severityResult"></span>%</h2>
+        <h3>Uploaded Image:</h3>
+        <img id="uploadedImage" src="" alt="Uploaded Image">
+    </div>
+
+    <script>
+        async function uploadImage() {
+            const fileInput = document.getElementById('fileInput');
+            const plantType = document.getElementById('plantType').value;
+            const predictionResult = document.getElementById('predictionResult');
+            const severityResult = document.getElementById('severityResult');
+            const uploadedImage = document.getElementById('uploadedImage');
+            const loader = document.getElementById('loader');
+
+            if (fileInput.files.length === 0) {
+                alert('Please select an image first.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('plant', plantType);
+
+            // Show loader
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    predictionResult.textContent = data.disease;
+                    severityResult.textContent = data.severity;
+                    uploadedImage.src = data.image_url;
+                } else {
+                    predictionResult.textContent = 'Error: ' + data.error;
+                }
+            } catch (error) {
+                predictionResult.textContent = 'Error: ' + error.message;
+            } finally {
+                // Hide loader
+                loader.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
