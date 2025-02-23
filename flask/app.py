@@ -164,8 +164,8 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/generate-docs', methods=['POST'])
-def generate_docs():
+# @app.route('/generate-docs', methods=['POST'])
+# def generate_docs():
     print("generate_docs function called in Flask")
     
     try:
@@ -185,6 +185,50 @@ def generate_docs():
             return jsonify({"Fertilizers etc": response_text})
         else:
             return jsonify({"error": "Failed to generate prediction"}), 500
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+import json
+import re
+
+@app.route('/generate-docs', methods=['POST'])
+def generate_docs():
+    print("generate_docs function called in Flask")
+
+    try:
+        data = request.get_json()
+        required_keys = {'crop', 'disease', 'longitude', 'latitude'}
+
+        if not required_keys.issubset(data.keys()):
+            return jsonify({"error": "Missing required fields."}), 400
+
+        crop = data['crop']
+        disease = data['disease']
+        location = f"Longitude: {data['longitude']}, Latitude: {data['latitude']}"
+
+        response_text = generate_prediction(disease, crop, location)
+
+        # Debug: Print raw response
+        print("Raw Response from generate_prediction:", response_text)
+
+        if not response_text:
+            return jsonify({"error": "Empty response from generate_prediction"}), 500
+
+        # Remove Markdown code block formatting (```json ... ```)
+        cleaned_response = re.sub(r'```json\n(.*?)\n```', r'\1', response_text, flags=re.DOTALL).strip()
+
+        try:
+            response_json = json.loads(cleaned_response)  # Now, this should work
+        except json.JSONDecodeError:
+            return jsonify({"error": "Still invalid JSON format", "raw_response": cleaned_response}), 500
+
+        # Extract only required keys
+        filtered_response = {
+            "Fertilizers": response_json.get("Fertilizers", []),
+            "Pesticides & Fungicides": response_json.get("Pesticides & Fungicides", [])
+        }
+
+        return jsonify(filtered_response)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
