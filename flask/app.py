@@ -271,8 +271,8 @@ def doseprediction():
         data = request.get_json()
         required_keys = {'crop_type', 'growth_stage', 'fertilizer_name', 'plot_size'}
 
-        if not required_keys.issubset(data.keys()):
-            return jsonify({"error": "Missing required fields."}), 400
+        # if not required_keys.issubset(data.keys()):
+        #     return jsonify({"error": "Missing required fields."}), 400
         
         Crop_type = data['crop_type']
         Growth_stage = data['growth_stage']

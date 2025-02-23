@@ -1,4 +1,4 @@
-def get_fertilizer_dosage(crop_type, growth_stage, fertilizer_name, plot_size):
+def get_fertilizer_dosage(crop_type="", growth_stage="", fertilizer_name="", plot_size=""):
     prompt=f'''You are an expert agricultural AI assistant. Your task is to predict how a given crop disease will progress over time based on essential farming factors and recommend the required quantity of treatment or fertilizer.  
 
 ### *Input Parameters:*  

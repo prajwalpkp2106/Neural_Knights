@@ -8,7 +8,7 @@
 
 # def process_documentation(module_info):
     
-#     api_key = "AIzaSyChshjaKd6Kp9JTC1OId5_ox2uEiJjbLbE"
+#     api_key = "
 #     genai.configure(api_key=api_key)
 #     model = genai.GenerativeModel("gemini-1.5-flash")
     
