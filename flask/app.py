@@ -8,6 +8,8 @@ import cv2
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
+import json
+import re
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -188,8 +190,7 @@ def predict():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-import json
-import re
+
 
 @app.route('/generate-docs', methods=['POST'])
 def generate_docs():
