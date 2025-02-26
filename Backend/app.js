@@ -20,7 +20,9 @@ const s3Client = new S3Client({
         secretAccessKey: process.env.secretAccess, // Replace with your AWS secret key
     }
 });
-
+app.get("/health", (req, res) => {
+    res.json({ status: "running" });
+});
 async function getObject(key) {
     const command = new GetObjectCommand({
         Bucket: "privatebucketnodejs",
