@@ -1,4 +1,8 @@
 Flask==2.3.2
-tensorflow==2.10.0
-numpy==1.24.3
-Pillow==10.0.0
+tensorflow
+numpy
+Pillow
+opencv-python
+python-dotenv
+google-generativeai
+protobuf
